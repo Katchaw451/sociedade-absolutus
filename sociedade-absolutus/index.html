@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sociedade Absolutus - Golden Student Awards</title>
+    <meta name="description" content="Quantum Education Platform connecting exceptional students with global opportunities">
+    <meta name="keywords" content="quantum, education, awards, students, investors, crypto payments">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Sociedade Absolutus - Golden Student Awards">
+    <meta property="og:description" content="Where Education Meets Excellence">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --dark-green: #003e2e;
+            --medium-green: #00513a;
+            --orange-red: #ff4500;
+            --gold: #ffd700;
+            --light-orange: #ff8c00;
+            --dark-orange: #cc5500;
+            --white: #ffffff;
+            --black: #0a0a0a;
+            --neon-blue: #00f3ff;
+            --quantum-purple: #8a2be2;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--black) 100%);
+            color: var(--white);
+            min-height: 100vh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0, 62, 46, 0.9);
+            border-bottom: 4px solid var(--orange-red);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--orange-red), var(--gold), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 0 30px rgba(255, 69, 0, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: var(--gold);
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .real-time-display {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, var(--orange-red), var(--dark-orange));
+            color: var(--white);
+            border: none;
+            padding: 18px 35px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 69, 0, 0.6);
+        }
+
+        /* Section Base Styles */
+        .section {
+            background: rgba(0, 81, 58, 0.15);
+            border: 2px solid var(--medium-green);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--orange-red), var(--gold), var(--neon-blue));
+        }
+
+        .section-title {
+            color: var(--gold);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid var(--orange-red);
+            padding-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Quantum Elements */
+        .quantum-pulse {
+            animation: quantumPulse 2s infinite;
+        }
+
+        @keyframes quantumPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+        /* Premium Offers */
+        .premium-offer {
+            background: linear-gradient(135deg, var(--dark-green), var(--black));
+            border: 4px solid var(--gold);
+            border-radius: 25px;
+            padding: 50px;
+            text-align: center;
+            margin: 50px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, var(--gold), var(--orange-red));
+            color: var(--black);
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transform: rotate(15deg);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: rotate(15deg) translateY(0); }
+            50% { transform: rotate(15deg) translateY(-10px); }
+        }
+
+        .price {
+            font-size: 4rem;
+            color: var(--gold);
+            margin: 30px 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .price-subtext {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+        }
+
+        /* Crypto Payment System */
+        .crypto-payment {
+            background: rgba(255, 69, 0, 0.15);
+            border: 2px solid var(--orange-red);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .crypto-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .crypto-option {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .crypto-option.selected {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .wallet-address {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--medium-green);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        /* Investment Tiers */
+        .investment-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .tier-card {
+            background: linear-gradient(135deg, rgba(0, 62, 46, 0.8), rgba(0, 0, 0, 0.8));
+            border: 2px solid;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .tier-gold {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .tier-silver {
+            border-color: #c0c0c0;
+            box-shadow: 0 0 30px rgba(192, 192, 192, 0.4);
+        }
+
+        .tier-bronze {
+            border-color: #cd7f32;
+            box-shadow: 0 0 30px rgba(205, 127, 50, 0.4);
+        }
+
+        .tier-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .tier-gold .tier-badge {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .tier-features {
+            list-style: none;
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .tier-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-features li:before {
+            content: '✅ ';
+            margin-right: 10px;
+            color: var(--gold);
+        }
+        /* Forms */
+        .form-group {
+            margin: 25px 0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid var(--medium-green);
+            border-radius: 12px;
+            background: rgba(0, 62, 46, 0.4);
+            color: var(--white);
+            font-size: 1.1rem;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--orange-red);
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+            transform: scale(1.02);
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, var(--orange-red), var(--light-orange));
+            color: var(--white);
+            border: none;
+            padding: 18px 45px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 69, 0, 0.5);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 3px dashed var(--medium-green);
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            margin: 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(0, 62, 46, 0.2);
+        }
+
+        .file-upload:hover {
+            border-color: var(--orange-red);
+            background: rgba(255, 69, 0, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        /* Quantum Tracker */
+        .quantum-tracker {
+            background: linear-gradient(135deg, #001122, #003e2e);
+            border: 3px solid var(--orange-red);
+            border-radius: 20px;
+            padding: 35px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .tracker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .tracker-card {
+            background: rgba(0, 62, 46, 0.4);
+            border: 2px solid var(--medium-green);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tracker-card:hover {
+            border-color: var(--neon-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .tracker-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin: 15px 0;
+        }
+
+        .probability-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--orange-red), var(--gold));
+            border-radius: 12px;
+            transition: width 1s ease-in-out;
+            position: relative;
+        }
+
+        .probability-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* Real-time Analytics */
+        .analytics-dashboard {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--quantum-purple);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-box {
+            background: rgba(138, 43, 226, 0.2);
+            border: 1px solid var(--quantum-purple);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            margin: 10px 0;
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            background: linear-gradient(135deg, var(--dark-orange), var(--orange-red));
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .countdown-timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--white);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin: 20px 0;
+        }
+
+        .countdown-label {
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            margin-top: 80px;
+            border-top: 3px solid var(--medium-green);
+            background: rgba(0, 62, 46, 0.8);
+            color: var(--gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.05), transparent);
+        }
+
+        .legal-links {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legal-links a {
+            color: var(--gold);
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .legal-links a:hover {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .social-links {
+            margin: 25px 0;
+        }
+
+        .social-icon {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 1.5rem;
+            color: var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.3) rotate(10deg);
+            color: var(--gold);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 2.8rem;
+            }
+
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 90%;
+                text-align: center;
+                margin: 8px 0;
+            }
+
+            .section {
+                padding: 25px;
+                margin: 25px 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .premium-offer {
+                padding: 30px 20px;
+            }
+
+            .price {
+                font-size: 3rem;
+            }
+
+            .investment-tiers {
+                grid-template-columns: 1fr;
+            }
+
+            .legal-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .countdown-timer {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+
+            .header {
+                padding: 40px 15px;
+            }
+
+            .nav-btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 20px 15px;
+            }
+
+            .tracker-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility Classes */
+        .text-gold { color: var(--gold); }
+        .text-neon { color: var(--neon-blue); }
+        .text-orange { color: var(--orange-red); }
+        
+        .bg-dark { background: rgba(0, 0, 0, 0.7); }
+        .bg-green { background: rgba(0, 62, 46, 0.7); }
+        
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .p-20 { padding: 20px; }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .pulse-glow {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 69, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 69, 0, 0.8); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header fade-in">
+            <div class="logo quantum-pulse">SOCIEDADE ABSOLUTUS</div>
+            <div class="tagline">Where Education Meets Excellence</div>
+            <div class="real-time-display neon-glow" id="real-time-display">
+                <!-- Updated by JavaScript -->
+            </div>
+            
+            <!-- Countdown to Next Awards -->
+            <div class="countdown">
+                <div class="countdown-label">⏳ NEXT GOLDEN STUDENT AWARDS IN:</div>
+                <div class="countdown-timer" id="countdown-timer">
+                    <!-- Updated by JavaScript -->
+                </div>
+                <p>Submit your work before the deadline!</p>
+            </div>
+        </header>

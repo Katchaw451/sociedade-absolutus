@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sociedade Absolutus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            margin: 0;
+            padding: 40px;
+            text-align: center;
+        }
+        h1 {
+            color: #f00;
+            font-size: 3rem;
+            margin: 20px 0;
+        }
+        .box {
+            background: #003e2e;
+            padding: 30px;
+            border: 3px solid #f00;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .live {
+            color: #0f0;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🧠 SOCIEDADE ABSOLUTUS</h1>
+    
+    <div class="box">
+        <h2 class="live">✅ LIVE & WORKING</h2>
+        <p>Quantum Education Platform</p>
+        <p>Ray ID: <span id="rayid">Loading...</span></p>
+        <p>Time: <span id="time">Loading...</span></p>
+    </div>
+
+    <div class="box">
+        <h3>🚀 Features</h3>
+        <p>• Student Awards System</p>
+        <p>• Quantum Analytics</p>
+        <p>• Crypto Payments</p>
+        <p>• Ray ID Tracking</p>
+    </div>
+
+    <script>
+        // Generate Ray ID
+        function generateRayId() {
+            return 'RAY_' + Date.now() + '_' + Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+        
+        // Update time
+        function updateTime() {
+            document.getElementById('time').textContent = new Date().toLocaleString();
+        }
+        
+        // Initialize
+        document.getElementById('rayid').textContent = generateRayId();
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        console.log('Sociedade Absolutus - Successfully loaded');
+    </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolutus Society // Predictive Interface</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body { background: #0a0a0a; color: #00ff88; min-height: 100vh; padding: 20px; }
+        .dashboard { max-width: 1200px; margin: 0 auto; border: 1px solid #00ff88; padding: 20px; }
+        .mining-section { background: rgba(0, 255, 136, 0.1); padding: 20px; margin: 20px 0; border: 1px solid #00ff88; }
+        .prediction-interface { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .input-panel, .output-panel { border: 1px solid #00ff88; padding: 20px; min-height: 400px; }
+        .graphic-sequence { display: flex; overflow-x: auto; gap: 10px; margin: 20px 0; }
+        .graphic-frame { width: 200px; height: 150px; border: 1px solid #00ff88; background: white; }
+        .graphic-frame img { width: 100%; height: 100%; object-fit: contain; }
+        .stats-panel { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .stat-card { border: 1px solid #00ff88; padding: 15px; text-align: center; }
+        button { background: #00ff88; color: #000; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; font-weight: bold; }
+        textarea { width: 100%; background: #000; color: #00ff88; border: 1px solid #00ff88; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>ABSOLUTUS SOCIETY</h1>
+        <p>Everything is random, but predictable</p>
+        
+        <div class="mining-section">
+            <h2>Predictive Mining</h2>
+            <p>Mining Progress: <span id="mining-progress">0%</span></p>
+            <p>Insights Mined: <span id="insights-mined">0</span></p>
+            <button onclick="startMining()">Start Predictive Mining</button>
+        </div>
+        
+        <div class="prediction-interface">
+            <div class="input-panel">
+                <h3>Input Observation</h3>
+                <textarea id="prompt-input" placeholder="Describe human reaction or phenomenon to simulate..." rows="6"></textarea>
+                <button onclick="generatePrediction()">Generate Predictive Sequence</button>
+            </div>
+            
+            <div class="output-panel">
+                <h3>Predictive Output</h3>
+                <div class="graphic-sequence" id="graphic-sequence"></div>
+                <div class="stats-panel">
+                    <div class="stat-card"><div>R² Value</div><div id="r-value">0.00</div></div>
+                    <div class="stat-card"><div>P Value</div><div id="p-value">1.00</div></div>
+                    <div class="stat-card"><div>Confidence</div><div id="confidence">0%</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        
+        socket.on('mining_update', function(data) {
+            document.getElementById('mining-progress').textContent = data.progress + '%';
+            document.getElementById('insights-mined').textContent = data.insights_mined;
+        });
+        
+        function startMining() {
+            socket.emit('start_mining');
+        }
+        
+        async function generatePrediction() {
+            const prompt = document.getElementById('prompt-input').value;
+            if (!prompt) {
+                alert('Please enter an observation');
+                return;
+            }
+            
+            const response = await fetch('/generate_prediction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt })
+            });
+            
+            const data = await response.json();
+            displayResults(data);
+        }
+        
+        function displayResults(data) {
+            const sequenceContainer = document.getElementById('graphic-sequence');
+            sequenceContainer.innerHTML = '';
+            
+            data.sequences.forEach(seq => {
+                const frame = document.createElement('div');
+                frame.className = 'graphic-frame';
+                frame.innerHTML = `
+                    <img src="${seq.image}" alt="${seq.reaction_type}">
+                    <div style="text-align: center; font-size: 12px; padding: 5px;">${seq.reaction_type}</div>
+                `;
+                sequenceContainer.appendChild(frame);
+            });
+            
+            document.getElementById('r-value').textContent = data.statistics.r_squared;
+            document.getElementById('p-value').textContent = data.statistics.p_value;
+            document.getElementById('confidence').textContent = data.statistics.confidence + '%';
+        }
+        
+        // Auto-start mining
+        setTimeout(startMining, 1000);
+    </script>
+</body>
+</html>

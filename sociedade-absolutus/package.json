@@ -1,0 +1,9 @@
+{
+  "name": "sociedade-absolutus",
+  "version": "1.0.0",
+  "description": "Quantum Education & Golden Student Awards",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  }
+}
