@@ -3,6 +3,9 @@
 <head>
     <title>Sociedade Absolutus - $SA Mining</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Phantom Wallet Script -->
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-wallets@latest/lib/index.iife.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -29,6 +32,14 @@
             border-radius: 5px;
             font-family: monospace;
         }
+        .wallet-section {
+            background: rgba(0, 34, 68, 0.9);
+            padding: 25px;
+            border: 3px solid #9944ff;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
         .mining-section {
             background: rgba(0, 62, 46, 0.9);
             padding: 30px;
@@ -54,6 +65,9 @@
             font-size: 1.1rem;
             margin: 10px 5px;
             transition: all 0.3s;
+        }
+        .btn-wallet {
+            background: linear-gradient(45deg, #9944ff, #5500ff);
         }
         .btn:hover { transform: translateY(-2px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -124,6 +138,17 @@
             font-weight: bold;
             margin: 0 5px;
         }
+        .wallet-badge {
+            background: linear-gradient(45deg, #9944ff, #5500ff);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+        .wallet-connected {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+        }
     </style>
 </head>
 <body>
@@ -134,8 +159,31 @@
             <div class="ray-id">Ray ID: <span id="rayId">Generating...</span></div>
         </div>
 
+        <!-- Phantom Wallet Section -->
+        <div class="wallet-section" id="walletSection">
+            <h2>👛 Connect Phantom Wallet</h2>
+            <p>Connect your Phantom wallet to receive $SA tokens and withdraw to Solana</p>
+            
+            <button class="btn btn-wallet" onclick="connectPhantom()" id="connectWalletBtn">
+                🔗 Connect Phantom Wallet
+            </button>
+            
+            <div id="walletInfo" style="display: none;">
+                <div class="wallet-connected" style="padding: 15px; border-radius: 10px; margin: 15px 0;">
+                    <h3>✅ Wallet Connected</h3>
+                    <p>Address: <span id="walletAddress"></span></p>
+                    <p>Network: <span id="walletNetwork">Solana Mainnet</span></p>
+                    <button class="btn" onclick="disconnectWallet()">🔓 Disconnect</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px; font-size: 0.9rem;">
+                <p>💡 Don't have Phantom? <a href="https://phantom.app/" target="_blank" style="color: #9944ff;">Download here</a></p>
+            </div>
+        </div>
+
         <!-- Wallet Information -->
-        <div class="wallet-info">
+        <div class="wallet-info" id="balanceSection" style="display: none;">
             <h2>💰 Your <span class="sa-badge">$SA</span> Wallet</h2>
             <div class="mining-stats">
                 <div class="stat-box">
@@ -154,7 +202,7 @@
         </div>
 
         <!-- Mining Section -->
-        <div class="mining-section">
+        <div class="mining-section" id="miningSection" style="display: none;">
             <h2>⛏️ $SA Token Mining</h2>
             <p>Mine <span class="sa-badge">$SA</span> tokens using your browser's computational power</p>
             
@@ -173,31 +221,28 @@
         </div>
 
         <!-- Withdraw Section -->
-        <div class="withdraw-section">
-            <h2>💳 Withdraw <span class="sa-badge">$SA</span> Tokens</h2>
+        <div class="withdraw-section" id="withdrawSection" style="display: none;">
+            <h2>💳 Withdraw <span class="sa-badge">$SA</span> to Phantom</h2>
             
             <div class="form-group">
-                <input type="text" class="form-input" id="walletAddress" placeholder="Your Crypto Wallet Address">
-                <input type="number" class="form-input" id="withdrawAmount" placeholder="Amount to withdraw ($SA)" min="1">
-                <select class="form-input" id="cryptoNetwork">
-                    <option value="solana">Solana (SOL) - Recommended</option>
-                    <option value="ethereum">Ethereum (ETH)</option>
-                    <option value="bitcoin">Bitcoin (BTC)</option>
-                    <option value="binance">Binance Smart Chain (BSC)</option>
-                </select>
+                <input type="number" class="form-input" id="withdrawAmount" placeholder="Amount to withdraw ($SA)" min="10">
+                <div style="margin: 10px 0;">
+                    <strong>Withdraw to: <span id="withdrawAddress"></span></strong>
+                </div>
             </div>
             
-            <button class="btn" onclick="withdrawTokens()">💸 Withdraw $SA</button>
+            <button class="btn" onclick="withdrawToPhantom()">💸 Withdraw $SA to Phantom</button>
             
             <div style="margin-top: 15px; font-size: 0.9rem;">
                 <p>💰 Minimum withdrawal: 10 $SA</p>
-                <p>⏱️ Processing time: 2-24 hours</p>
+                <p>⏱️ Processing time: Instant (Test Mode)</p>
                 <p>🔗 Network fee: 1 $SA</p>
+                <p>🌐 Network: Solana</p>
             </div>
         </div>
 
         <!-- Transaction History -->
-        <div class="mining-section">
+        <div class="mining-section" id="historySection" style="display: none;">
             <h2>📋 $SA Transaction History</h2>
             <div class="transaction-log" id="transactionLog">
                 <!-- Transactions will appear here -->
@@ -209,9 +254,9 @@
             <h2>ℹ️ About $SA Token</h2>
             <p><strong>Token:</strong> $SA (Sociedade Absolutus)</p>
             <p><strong>Blockchain:</strong> Solana</p>
-            <p><strong>Total Supply:</strong> 1,000,000,000 $SA</p>
-            <p><strong>Use Case:</strong> Education, Awards, Governance</p>
             <p><strong>Contract:</strong> H7PWQkA6rRFuRxcKpASspFr6G3mG6L3T87tj3JpyoszX</p>
+            <p><strong>Use Case:</strong> Education, Awards, Governance</p>
+            <p><span class="wallet-badge">👛 Phantom Wallet Ready</span></p>
         </div>
     </div>
 
@@ -223,12 +268,78 @@
         let totalMined = 0;
         let miningPower = 1.0;
         let currentHashRate = 0;
+        let walletConnected = false;
+        let walletAddress = '';
+
+        // Phantom Wallet Functions
+        async function connectPhantom() {
+            try {
+                // Check if Phantom is installed
+                if (!window.solana || !window.solana.isPhantom) {
+                    alert('Phantom wallet not found! Please install Phantom extension.');
+                    return;
+                }
+
+                // Connect to Phantom
+                const response = await window.solana.connect();
+                walletAddress = response.publicKey.toString();
+                walletConnected = true;
+
+                // Update UI
+                document.getElementById('walletAddress').textContent = 
+                    walletAddress.substring(0, 8) + '...' + walletAddress.substring(walletAddress.length - 8);
+                document.getElementById('withdrawAddress').textContent = 
+                    walletAddress.substring(0, 8) + '...' + walletAddress.substring(walletAddress.length - 8);
+                document.getElementById('walletInfo').style.display = 'block';
+                document.getElementById('connectWalletBtn').style.display = 'none';
+                document.getElementById('balanceSection').style.display = 'block';
+                document.getElementById('miningSection').style.display = 'block';
+                document.getElementById('withdrawSection').style.display = 'block';
+                document.getElementById('historySection').style.display = 'block';
+
+                logTransaction('WALLET_CONNECTED', `Phantom wallet connected: ${walletAddress.substring(0, 8)}...`, generateRayId());
+                
+                // Check for existing balance
+                checkWalletBalance();
+
+            } catch (error) {
+                console.error('Wallet connection error:', error);
+                alert('Failed to connect Phantom wallet: ' + error.message);
+            }
+        }
+
+        function disconnectWallet() {
+            walletConnected = false;
+            walletAddress = '';
+            
+            // Reset UI
+            document.getElementById('walletInfo').style.display = 'none';
+            document.getElementById('connectWalletBtn').style.display = 'block';
+            document.getElementById('balanceSection').style.display = 'none';
+            document.getElementById('miningSection').style.display = 'none';
+            document.getElementById('withdrawSection').style.display = 'none';
+            document.getElementById('historySection').style.display = 'none';
+            
+            logTransaction('WALLET_DISCONNECTED', 'Phantom wallet disconnected', generateRayId());
+        }
+
+        async function checkWalletBalance() {
+            // In a real app, this would check on-chain balance
+            // For now, we'll use localStorage
+            loadWalletData();
+            updateDisplay();
+        }
 
         // Initialize
         function init() {
             loadWalletData();
             generateRayId();
             updateDisplay();
+            
+            // Check if Phantom is available
+            if (window.solana && window.solana.isPhantom) {
+                document.getElementById('connectWalletBtn').innerHTML = '🔗 Connect Phantom Wallet (Available)';
+            }
         }
 
         // Generate Ray ID
@@ -268,6 +379,11 @@
 
         // Mining functions
         function startMining() {
+            if (!walletConnected) {
+                alert('Please connect your Phantom wallet first!');
+                return;
+            }
+            
             if (isMining) return;
             
             isMining = true;
@@ -338,15 +454,13 @@
         }
 
         // Withdraw functions
-        function withdrawTokens() {
-            const address = document.getElementById('walletAddress').value;
-            const amount = parseFloat(document.getElementById('withdrawAmount').value);
-            const network = document.getElementById('cryptoNetwork').value;
-            
-            if (!address) {
-                alert('Please enter your wallet address');
+        async function withdrawToPhantom() {
+            if (!walletConnected) {
+                alert('Please connect your Phantom wallet first!');
                 return;
             }
+            
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
             
             if (!amount || amount < 10) {
                 alert('Minimum withdrawal is 10 $SA');
@@ -361,22 +475,29 @@
             const fee = 1; // Network fee
             const totalDeduction = amount + fee;
             
-            if (confirm(`Withdraw ${amount} $SA to ${address}?\nNetwork: ${network}\nNetwork fee: ${fee} $SA\nTotal: ${totalDeduction} $SA`)) {
-                balance -= totalDeduction;
-                saveWalletData();
-                updateDisplay();
-                
-                const rayId = generateRayId();
-                logTransaction('WITHDRAW', `Withdrew ${amount} $SA to ${network} network`, rayId);
-                
-                // Simulate processing
-                setTimeout(() => {
-                    logTransaction('WITHDRAW_COMPLETE', `Withdrawal processed to ${address}`, rayId);
-                }, 2000);
-                
-                // Clear form
-                document.getElementById('walletAddress').value = '';
-                document.getElementById('withdrawAmount').value = '';
+            if (confirm(`Withdraw ${amount} $SA to your Phantom wallet?\nNetwork fee: ${fee} $SA\nTotal: ${totalDeduction} $SA\n\nAddress: ${walletAddress}`)) {
+                try {
+                    // Simulate blockchain transaction
+                    balance -= totalDeduction;
+                    saveWalletData();
+                    updateDisplay();
+                    
+                    const rayId = generateRayId();
+                    logTransaction('WITHDRAW_PENDING', `Withdrawing ${amount} $SA to Phantom`, rayId);
+                    
+                    // Simulate transaction processing
+                    setTimeout(() => {
+                        logTransaction('WITHDRAW_COMPLETE', `Successfully sent ${amount} $SA to ${walletAddress.substring(0, 8)}...`, rayId);
+                        alert(`✅ Success! ${amount} $SA sent to your Phantom wallet!\n\nThis is a simulation. In production, this would be a real on-chain transaction.`);
+                    }, 2000);
+                    
+                    // Clear form
+                    document.getElementById('withdrawAmount').value = '';
+                    
+                } catch (error) {
+                    console.error('Withdraw error:', error);
+                    alert('Withdrawal failed: ' + error.message);
+                }
             }
         }
 
@@ -400,15 +521,30 @@
             }
         }
 
-        // Auto-start mining after 5 seconds
-        setTimeout(() => {
-            if (!isMining) {
-                document.getElementById('miningStatus').textContent = 'Click Start Mining to begin earning $SA...';
+        // Auto-check for Phantom wallet
+        function checkPhantomAvailability() {
+            if (window.solana && window.solana.isPhantom) {
+                console.log('Phantom wallet detected');
+                // Auto-try to connect if previously connected
+                const wasConnected = localStorage.getItem('phantom_connected');
+                if (wasConnected === 'true') {
+                    connectPhantom();
+                }
             }
-        }, 5000);
+        }
 
         // Initialize when page loads
-        window.onload = init;
+        window.onload = function() {
+            init();
+            setTimeout(checkPhantomAvailability, 1000);
+        };
+
+        // Save connection state
+        window.addEventListener('beforeunload', function() {
+            if (walletConnected) {
+                localStorage.setItem('phantom_connected', 'true');
+            }
+        });
     </script>
 </body>
 </html>
