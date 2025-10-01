@@ -1,0 +1,27 @@
+import { Connection, Keypair, clusterApiUrl, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { createMint, getOrCreateAssociatedTokenAccount, mintTo } from '@solana/spl-token';
+
+console.log('🎯 SIMPLE TOKEN CREATION GUIDE');
+console.log('==============================');
+console.log('');
+console.log('Since you have a funded wallet (8wKA13AETG...), here are your options:');
+console.log('');
+console.log('OPTION 1 - WEB TOOL (Recommended):');
+console.log('  1. Go to: https://spl-token-ui.com/');
+console.log('  2. Connect Phantom with your funded wallet');
+console.log('  3. Create token with:');
+console.log('     - Name: Sociedade Absolutus');
+console.log('     - Symbol: SA');
+console.log('     - Decimals: 9');
+console.log('     - Supply: 1000000000');
+console.log('  4. Copy the token address and use it in your website');
+console.log('');
+console.log('OPTION 2 - USE EXISTING TOKEN FOR TESTING:');
+console.log('  Use this existing Devnet token for immediate testing:');
+console.log('  Token: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (USDC Devnet)');
+console.log('  This is a real token you can use to test your withdrawal system!');
+console.log('');
+console.log('OPTION 3 - MANUAL CREATION:');
+console.log('  If you want to programmatically create it, we need your private key.');
+console.log('  But for security, use the web tools above.');
+console.log('==============================');

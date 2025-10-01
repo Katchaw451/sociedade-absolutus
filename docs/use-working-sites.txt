@@ -1,0 +1,17 @@
+🎯 WEBSITES THAT DEFINITELY WORK:
+
+1. https://solana-token-creator.com/
+   - Connect Phantom (Devnet)
+   - Fill: Sociedade Absolutus, SA, 9, 1000000000
+   - Check all "Revoke" boxes
+   - Launch
+
+2. https://www.solana-tool.com/token/create
+   - Simple form, usually works
+
+3. https://spl-token-ui.com/
+   - Go to "Tokens" → "Create New Token"
+
+YOUR SOL IS THERE - the issue is the websites, not your wallet!
+
+Try them in this order. At least ONE will work! 🚀

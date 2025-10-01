@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create $SA Token</title>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@latest/lib/index.iife.js"></script>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+    <h1>Create $SA Token</h1>
+    <button onclick="createToken()" style="padding: 10px 20px; font-size: 16px;">
+        🚀 Create $SA Token Now
+    </button>
+    <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 5px;"></div>
+
+    <script>
+    async function createToken() {
+        const result = document.getElementById('result');
+        
+        try {
+            result.innerHTML = '🔗 Connecting to Phantom...';
+            const provider = window.solana;
+            if (!provider) {
+                result.innerHTML = '❌ Please install Phantom Wallet!';
+                return;
+            }
+            
+            await provider.connect();
+            const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'));
+            
+            result.innerHTML = '💰 Checking balance...';
+            const balance = await connection.getBalance(provider.publicKey);
+            result.innerHTML = `✅ Balance: ${(balance / 1e9).toFixed(4)} SOL<br>🔄 Creating token...`;
+            
+            // Create token
+            const tokenMint = await splToken.createMint(
+                connection,
+                provider,
+                provider.publicKey,
+                null,
+                9
+            );
+            
+            result.innerHTML = 
+                `🎉 <strong>$SA TOKEN CREATED!</strong><br><br>
+                 <strong>Token Address:</strong><br>
+                 <code style="background: #f0f0f0; padding: 10px; display: block;">${tokenMint.toBase58()}</code><br>
+                 ✅ Save this address!<br>
+                 🔗 <a href="https://solscan.io/token/${tokenMint.toBase58()}?cluster=devnet" target="_blank">View on Solscan</a>`;
+                 
+        } catch (error) {
+            result.innerHTML = `❌ Error: ${error.message}`;
+        }
+    }
+    </script>
+</body>
+</html>

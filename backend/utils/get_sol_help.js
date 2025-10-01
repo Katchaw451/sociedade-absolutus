@@ -1,0 +1,17 @@
+console.log("📞 QUICK SOLUTIONS:");
+console.log("===================");
+console.log("1. JOIN SOLANA DISCORD: https://discord.gg/solana");
+console.log("   - Go to #devnet-faucet channel");
+console.log("   - Type: !faucet 8wKA13AETGjrY48dPzRbTTPvNF6HF2VrxLTmafgT2Esu");
+console.log("");
+console.log("2. USE ALTERNATIVE FAUCETS:");
+console.log("   - https://faucet.solana.com");
+console.log("   - https://faucet.quicknode.com/solana/devnet");
+console.log("   - https://dialectapi.to/faucet");
+console.log("");
+console.log("3. ASK IN COMMUNITY:");
+console.log("   - Twitter: Post your wallet address with #SolanaDevnet");
+console.log("   - Reddit: r/solana developers community");
+console.log("");
+console.log("YOUR WALLET: 8wKA13AETGjrY48dPzRbTTPvNF6HF2VrxLTmafgT2Esu");
+console.log("NEEDED: 0.05 SOL for token creation");

@@ -1,0 +1,108 @@
+<!-- Add this section to your index.html after the header -->
+
+<!-- Social Login Section -->
+<div class="mining-section" id="loginSection">
+    <h2>🔐 Login to $SA Mining</h2>
+    <p>Secure your mining progress with social login</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 300px; margin: 20px auto;">
+        <button class="btn" onclick="loginWithGoogle()" style="background: linear-gradient(45deg, #DB4437, #E57373);">
+            🅖 Login with Google
+        </button>
+        
+        <button class="btn" onclick="loginWithGitHub()" style="background: linear-gradient(45deg, #333, #666);">
+            🐙 Login with GitHub
+        </button>
+        
+        <button class="btn" onclick="loginWithFacebook()" style="background: linear-gradient(45deg, #4267B2, #5B7BD5);">
+            📘 Login with Facebook
+        </button>
+    </div>
+    
+    <div id="userProfile" style="display: none; margin-top: 20px; text-align: center;">
+        <img id="userAvatar" src="" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #00ff88;">
+        <h3 id="userName">User Name</h3>
+        <p id="userEmail">user@example.com</p>
+        <button class="btn" onclick="logout()" style="background: linear-gradient(45deg, #dc3545, #e57373);">
+            🚪 Logout
+        </button>
+    </div>
+    
+    <div style="margin-top: 15px; font-size: 0.9rem; color: #888;">
+        <p>🔒 Your mining progress will be saved to your account</p>
+        <p>💰 Withdraw $SA tokens securely to your connected wallet</p>
+    </div>
+</div>
+
+<script>
+// Authentication functions
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/auth/user');
+        const data = await response.json();
+        
+        if (data.user) {
+            showUserProfile(data.user);
+        } else {
+            showLoginButtons();
+        }
+    } catch (error) {
+        console.log('Auth check failed, showing login buttons');
+        showLoginButtons();
+    }
+}
+
+function showUserProfile(user) {
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('userProfile').style.display = 'block';
+    document.querySelectorAll('.btn').forEach(btn => {
+        if (btn.textContent.includes('Login with')) {
+            btn.style.display = 'none';
+        }
+    });
+    
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('userEmail').textContent = user.email || 'No email provided';
+    
+    if (user.avatar) {
+        document.getElementById('userAvatar').src = user.avatar;
+    }
+    
+    // Save user data to localStorage for persistence
+    localStorage.setItem('sa_user_data', JSON.stringify(user));
+    
+    // Show welcome notification for first login
+    if (user.firstLogin) {
+        showNotification(`Welcome to $SA Mining, ${user.name}! 🎉`);
+    }
+}
+
+function showLoginButtons() {
+    document.getElementById('loginSection').style.display = 'block';
+    document.getElementById('userProfile').style.display = 'none';
+    document.querySelectorAll('.btn').forEach(btn => {
+        if (btn.textContent.includes('Login with')) {
+            btn.style.display = 'block';
+        }
+    });
+}
+
+function loginWithGoogle() {
+    window.location.href = '/auth/google';
+}
+
+function loginWithGitHub() {
+    window.location.href = '/auth/github';
+}
+
+function loginWithFacebook() {
+    window.location.href = '/auth/facebook';
+}
+
+function logout() {
+    window.location.href = '/auth/logout';
+}
+
+// Check auth status on page load
+window.addEventListener('load', checkAuthStatus);
+</script>

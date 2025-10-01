@@ -1,0 +1,18 @@
+🎯 QUICKEST WAY TO CREATE $SA TOKEN:
+
+1. GO TO: https://spl-token-ui.com/
+2. CONNECT YOUR PHANTOM WALLET (with your funded account)
+3. CLICK "Create New Token"
+4. FILL IN:
+   - Token Name: Sociedade Absolutus
+   - Symbol: SA
+   - Decimals: 9
+   - Initial Supply: 1000000000 (1 billion)
+5. CLICK "Create Token"
+6. SAVE THE TOKEN ADDRESS that appears!
+
+Then update your website with the real token address!
+
+ALTERNATIVE TOOLS:
+- https://solana-token-creator.com/
+- https://www.spl-token-create.com/

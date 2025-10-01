@@ -1,0 +1,22 @@
+import { Connection, Keypair, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { createMint } from '@solana/spl-token';
+
+console.log('🎯 CREATING $SA TOKEN');
+console.log('=====================');
+console.log('Target Address: H7PWQkA6rRFuRxcKpASspFr6G3mG6L3T87tj3JpyoszX');
+console.log('Funded Wallet: 8wKA13AETGjrY48dPzRbTTPvNF6HF2VrxLTmafgT2Esu');
+console.log('');
+console.log('📝 INSTRUCTIONS:');
+console.log('1. Go to: https://solana-token-creator.com/');
+console.log('2. Connect your funded wallet in Phantom');
+console.log('3. Fill in:');
+console.log('   - Token Name: Sociedade Absolutus');
+console.log('   - Symbol: SA');
+console.log('   - Decimals: 9');
+console.log('   - Supply: 1000000000');
+console.log('4. Under "Authority Options":');
+console.log('   - CHECK ALL 3 "Revoke" boxes');
+console.log('5. Click "LAUNCH MY TOKEN NOW"');
+console.log('6. Confirm transaction in Phantom');
+console.log('7. SAVE THE TOKEN ADDRESS (should be H7PWQkA6rRFuRxcKpASspFr6G3mG6L3T87tj3JpyoszX)');
+console.log('=====================');

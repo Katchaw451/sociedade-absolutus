@@ -1,0 +1,8 @@
+{
+  "name": "sociedade-absolutus-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Sociedade Absolutus mining platform",
+  "scripts": {
+    "build": "echo 'No build step required for static HTML'"
+  }
+}

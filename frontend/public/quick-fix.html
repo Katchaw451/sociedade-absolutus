@@ -1,0 +1,52 @@
+<!-- Add this script to your index.html before </body> -->
+
+<script>
+// Phantom Wallet Connection
+async function connectPhantom() {
+    try {
+        console.log('Attempting to connect to Phantom...');
+        const provider = window.solana;
+        
+        if (!provider) {
+            alert('Please install Phantom Wallet from https://phantom.app/');
+            return;
+        }
+        
+        // Connect to wallet
+        const response = await provider.connect();
+        const publicKey = provider.publicKey.toString();
+        
+        console.log('✅ Connected:', publicKey);
+        
+        // Update UI
+        document.body.innerHTML = document.body.innerHTML.replace(
+            'Connect Phantom Wallet', 
+            '✅ Connected: ' + publicKey.substring(0, 8) + '...'
+        );
+        
+        // Generate Ray ID
+        const rayId = 'RAY-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        document.body.innerHTML = document.body.innerHTML.replace(
+            'Ray ID: Generating...',
+            'Ray ID: ' + rayId
+        );
+        
+        alert('Successfully connected to Phantom!');
+        
+    } catch (error) {
+        console.error('❌ Connection error:', error);
+        alert('Failed to connect: ' + error.message);
+    }
+}
+
+// Check if Phantom is installed
+if (window.solana) {
+    console.log('Phantom wallet detected');
+    // Auto-connect if previously connected
+    if (window.solana.isConnected) {
+        connectPhantom();
+    }
+} else {
+    console.log('Phantom wallet not installed');
+}
+</script>

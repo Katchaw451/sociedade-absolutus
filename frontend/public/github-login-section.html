@@ -1,0 +1,96 @@
+<!-- Add this right after your header section in index.html -->
+
+<!-- GitHub Login Section -->
+<div class="mining-section" id="authSection">
+    <h2>🔐 Secure Your $SA Mining</h2>
+    <p>Login with GitHub to save your mining progress permanently</p>
+    
+    <div id="loginButtons" style="text-align: center;">
+        <button class="btn" onclick="loginWithGitHub()" 
+                style="background: linear-gradient(45deg, #24292e, #2ea44f); font-size: 1.1rem;">
+            <span style="font-size: 1.3rem;">🐙</span> Login with GitHub
+        </button>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #888;">
+            🔒 Your mining progress will be saved to your GitHub account
+        </p>
+    </div>
+    
+    <div id="userProfile" style="display: none; text-align: center; margin-top: 20px;">
+        <img id="userAvatar" src="" style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #00ff88;">
+        <h3 id="userName">GitHub User</h3>
+        <p id="userEmail" style="color: #888;"></p>
+        <div style="margin: 15px 0;">
+            <span class="sa-badge">✅ Account Connected</span>
+        </div>
+        <button class="btn" onclick="logout()" 
+                style="background: linear-gradient(45deg, #dc3545, #e57373);">
+            🚪 Logout
+        </button>
+    </div>
+</div>
+
+<script>
+// Authentication functions
+async function checkAuth() {
+    try {
+        const response = await fetch('/auth/user');
+        const data = await response.json();
+        
+        if (data.user) {
+            showUserProfile(data.user);
+            return true;
+        }
+    } catch (error) {
+        console.log('Auth check failed:', error);
+    }
+    showLoginButton();
+    return false;
+}
+
+function showUserProfile(user) {
+    document.getElementById('loginButtons').style.display = 'none';
+    document.getElementById('userProfile').style.display = 'block';
+    document.getElementById('userName').textContent = user.name || user.username;
+    document.getElementById('userEmail').textContent = user.email || `@${user.username}`;
+    
+    if (user.avatar) {
+        document.getElementById('userAvatar').src = user.avatar;
+    } else {
+        document.getElementById('userAvatar').src = 'https://github.com/identicons/' + user.username + '.png';
+    }
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('github_user', JSON.stringify(user));
+    
+    // Show welcome message for first login
+    if (user.firstLogin) {
+        showNotification(`🎉 Welcome to $SA Mining, ${user.name || user.username}!`);
+    }
+}
+
+function showLoginButton() {
+    document.getElementById('loginButtons').style.display = 'block';
+    document.getElementById('userProfile').style.display = 'none';
+}
+
+function loginWithGitHub() {
+    window.location.href = '/auth/github';
+}
+
+function logout() {
+    localStorage.removeItem('github_user');
+    window.location.href = '/auth/logout';
+}
+
+// Check auth status on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // First check if we have cached user data
+    const cachedUser = localStorage.getItem('github_user');
+    if (cachedUser) {
+        showUserProfile(JSON.parse(cachedUser));
+    }
+    
+    // Then verify with server
+    setTimeout(checkAuth, 1000);
+});
+</script>

@@ -1,5 +1,15 @@
 {
-  "name": "sociedade-absolutus",
+  "name": "sociedade-absolutus-auth",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "start": "node github-auth.js",
+    "dev": "node github-auth.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-github2": "^0.1.12"
+  }
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Create $SA Token</h2>
+    <button onclick="createToken()">Click to Create</button>
+    <div id="result"></div>
+
+    <script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.js"></script>
+    <script src="https://unpkg.com/@solana/spl-token@0.3.9/lib/index.iife.js"></script>
+    <script>
+    async function createToken() {
+        try {
+            const result = document.getElementById('result');
+            result.innerHTML = "Connecting...";
+            
+            const provider = window.solana;
+            if (!provider) throw new Error("Install Phantom");
+            
+            await provider.connect();
+            const connection = new solanaWeb3.Connection("https://api.devnet.solana.com");
+            
+            result.innerHTML = "Creating token...";
+            const token = await splToken.createMint(connection, provider, provider.publicKey, null, 9);
+            
+            result.innerHTML = `SUCCESS!<br>Token: ${token.toBase58()}`;
+        } catch (err) {
+            document.getElementById('result').innerHTML = "Error: " + err.message;
+        }
+    }
+    </script>
+</body>
+</html>
