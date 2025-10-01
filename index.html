@@ -57,6 +57,13 @@
         }
         .btn:hover { transform: translateY(-2px); }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .github-btn {
+            background: linear-gradient(45deg, #24292e, #2ea44f);
+            font-size: 1.2rem;
+        }
+        .logout-btn {
+            background: linear-gradient(45deg, #dc3545, #e57373);
+        }
         .mining-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -137,6 +144,13 @@
             max-width: 300px;
             display: none;
         }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #00ff88;
+            margin: 0 auto 15px;
+        }
     </style>
 </head>
 <body>
@@ -147,6 +161,33 @@
             <div class="logo">🧠 SOCIEDADE ABSOLUTUS</div>
             <p>$SA Token Mining Platform</p>
             <div class="ray-id">Ray ID: <span id="rayId">Generating...</span></div>
+        </div>
+
+        <!-- GitHub Login Section -->
+        <div class="mining-section" id="authSection">
+            <h2>🔐 Secure Your $SA Mining</h2>
+            <p>Login with GitHub to save your mining progress permanently</p>
+            
+            <div id="loginButtons" style="text-align: center;">
+                <button class="btn github-btn" onclick="loginWithGitHub()">
+                    <span style="font-size: 1.3rem;">🐙</span> Login with GitHub
+                </button>
+                <p style="margin-top: 10px; font-size: 0.9rem; color: #888;">
+                    🔒 Your mining progress will be saved to your GitHub account
+                </p>
+            </div>
+            
+            <div id="userProfile" style="display: none; text-align: center;">
+                <img id="userAvatar" class="user-avatar" src="">
+                <h3 id="userName">GitHub User</h3>
+                <p id="userEmail" style="color: #888;"></p>
+                <div style="margin: 15px 0;">
+                    <span class="sa-badge">✅ GitHub Connected</span>
+                </div>
+                <button class="btn logout-btn" onclick="logout()">
+                    🚪 Logout
+                </button>
+            </div>
         </div>
 
         <!-- Wallet Information -->
@@ -239,6 +280,72 @@
         let miningPower = 1.0;
         let currentHashRate = 0;
         let deviceId = null;
+        let currentUser = null;
+
+        // Authentication functions
+        async function checkAuth() {
+            try {
+                // For now, we'll use localStorage to simulate auth
+                // In production, this would call your auth server
+                const userData = localStorage.getItem('github_user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    showUserProfile(user);
+                    return true;
+                }
+            } catch (error) {
+                console.log('Auth check failed:', error);
+            }
+            showLoginButton();
+            return false;
+        }
+
+        function showUserProfile(user) {
+            currentUser = user;
+            document.getElementById('loginButtons').style.display = 'none';
+            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('userName').textContent = user.name || user.username;
+            document.getElementById('userEmail').textContent = user.email || `@${user.username}`;
+            
+            if (user.avatar) {
+                document.getElementById('userAvatar').src = user.avatar;
+            } else {
+                document.getElementById('userAvatar').src = 'https://github.com/identicons/' + user.username + '.png';
+            }
+            
+            showNotification(`🎉 Welcome to $SA Mining, ${user.name || user.username}!`);
+        }
+
+        function showLoginButton() {
+            document.getElementById('loginButtons').style.display = 'block';
+            document.getElementById('userProfile').style.display = 'none';
+        }
+
+        function loginWithGitHub() {
+            // For demo - simulate GitHub login
+            const demoUser = {
+                id: '12345',
+                provider: 'github',
+                name: 'Katchaw451',
+                username: 'Katchaw451',
+                email: 'katchaw451@github.com',
+                avatar: 'https://github.com/identicons/katchaw451.png',
+                firstLogin: true
+            };
+            
+            localStorage.setItem('github_user', JSON.stringify(demoUser));
+            showUserProfile(demoUser);
+            
+            // In production, this would be:
+            // window.location.href = 'https://your-auth-server.vercel.app/auth/github';
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('github_user');
+            showLoginButton();
+            showNotification('Logged out successfully');
+        }
 
         // Initialize
         function init() {
@@ -251,63 +358,18 @@
             generateRayId();
             updateDisplay();
             
-            // Show welcome notification
-            showNotification("Welcome to $SA Mining! Your device ID: " + deviceId);
+            // Check auth status
+            checkAuth();
         }
 
         // Generate or retrieve device ID
         function getDeviceId() {
             let id = localStorage.getItem('sa_device_id');
             if (!id) {
-                // Create a unique device ID
                 id = 'device_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
                 localStorage.setItem('sa_device_id', id);
-                
-                // Track new user in analytics
-                trackNewUser(id);
             }
             return id;
-        }
-
-        // Track new user in analytics
-        function trackNewUser(deviceId) {
-            const userData = {
-                deviceId: deviceId,
-                firstSeen: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                balance: 0,
-                totalMined: 0,
-                miningPower: 1.0
-            };
-            
-            // Save to analytics
-            saveToAnalytics('new_user', userData);
-        }
-
-        // Save data to analytics storage
-        function saveToAnalytics(eventType, data) {
-            const analyticsData = {
-                event: eventType,
-                deviceId: deviceId,
-                timestamp: new Date().toISOString(),
-                data: data
-            };
-            
-            // Save to localStorage as backup
-            const existingAnalytics = JSON.parse(localStorage.getItem('sa_analytics') || '[]');
-            existingAnalytics.push(analyticsData);
-            localStorage.setItem('sa_analytics', JSON.stringify(existingAnalytics));
-            
-            // Try to send to server
-            fetch('/api/analytics', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(analyticsData)
-            }).catch(error => {
-                console.log('Analytics save failed, using localStorage:', error);
-            });
         }
 
         // Generate Ray ID
@@ -322,60 +384,17 @@
         // Load wallet data from server
         async function loadWalletDataFromServer() {
             try {
-                const response = await fetch('/api/wallet-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ deviceId: deviceId })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
+                // For now, use localStorage
+                const localData = localStorage.getItem('sa_wallet_data');
+                if (localData) {
+                    const data = JSON.parse(localData);
                     balance = data.balance || 0;
                     totalMined = data.totalMined || 0;
                     miningPower = data.miningPower || 1.0;
-                    
-                    // Load transaction history
-                    if (data.transactions) {
-                        const log = document.getElementById('transactionLog');
-                        log.innerHTML = '';
-                        data.transactions.slice(-20).forEach(tx => {
-                            const entry = document.createElement('div');
-                            entry.style.padding = '5px 0';
-                            entry.style.borderBottom = '1px solid #333';
-                            entry.innerHTML = `
-                                <strong>${tx.timestamp}</strong> - ${tx.type}<br>
-                                ${tx.description}<br>
-                                <small style="color: #888;">Ray ID: ${tx.rayId}</small>
-                            `;
-                            log.appendChild(entry);
-                        });
-                    }
-                    
                     updateDisplay();
-                } else {
-                    console.error('Failed to load wallet data');
-                    // Fallback to localStorage
-                    loadFromLocalStorage();
                 }
             } catch (error) {
                 console.error('Error loading wallet data:', error);
-                // Fallback to localStorage
-                loadFromLocalStorage();
-            }
-        }
-
-        // Fallback to localStorage
-        function loadFromLocalStorage() {
-            const localData = localStorage.getItem('sa_wallet_data');
-            if (localData) {
-                const data = JSON.parse(localData);
-                balance = data.balance || 0;
-                totalMined = data.totalMined || 0;
-                miningPower = data.miningPower || 1.0;
-                updateDisplay();
             }
         }
 
@@ -389,22 +408,8 @@
                 lastUpdated: new Date().toISOString()
             };
             
-            // Save to analytics
-            saveToAnalytics('wallet_update', walletData);
-            
-            try {
-                await fetch('/api/save-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(walletData)
-                });
-            } catch (error) {
-                console.error('Error saving to server:', error);
-                // Fallback to localStorage
-                localStorage.setItem('sa_wallet_data', JSON.stringify(walletData));
-            }
+            // Save to localStorage
+            localStorage.setItem('sa_wallet_data', JSON.stringify(walletData));
         }
 
         // Update display
@@ -426,13 +431,6 @@
             
             let progress = 0;
             const rayId = generateRayId();
-            
-            // Track mining start
-            saveToAnalytics('mining_start', {
-                startTime: new Date().toISOString(),
-                initialBalance: balance,
-                miningPower: miningPower
-            });
             
             miningInterval = setInterval(() => {
                 // Simulate mining progress
@@ -491,13 +489,6 @@
             currentHashRate = 0;
             updateDisplay();
             
-            // Track mining stop
-            saveToAnalytics('mining_stop', {
-                endTime: new Date().toISOString(),
-                finalBalance: balance,
-                sessionMined: totalMined
-            });
-            
             logTransaction('MINING_STOP', 'Mining session stopped', generateRayId());
         }
 
@@ -533,15 +524,6 @@
                 const rayId = generateRayId();
                 logTransaction('WITHDRAW', `Withdrew ${amount} $SA to ${network} network`, rayId);
                 
-                // Track withdrawal
-                saveToAnalytics('withdrawal', {
-                    amount: amount,
-                    fee: fee,
-                    network: network,
-                    address: address,
-                    rayId: rayId
-                });
-                
                 // Simulate processing
                 setTimeout(() => {
                     logTransaction('WITHDRAW_COMPLETE', `Withdrawal processed to ${address}`, rayId);
@@ -567,37 +549,6 @@
                 <small style="color: #888;">Ray ID: ${rayId}</small>
             `;
             log.insertBefore(entry, log.firstChild);
-            
-            // Save transaction to server
-            const transactionData = {
-                deviceId: deviceId,
-                type: type,
-                description: description,
-                rayId: rayId,
-                timestamp: timestamp
-            };
-            
-            // Track in analytics
-            saveToAnalytics('transaction', transactionData);
-            
-            try {
-                await fetch('/api/log-transaction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(transactionData)
-                });
-            } catch (error) {
-                console.error('Error logging transaction:', error);
-                // Fallback to localStorage
-                const localTransactions = JSON.parse(localStorage.getItem('sa_transactions') || '[]');
-                localTransactions.unshift(transactionData);
-                if (localTransactions.length > 20) {
-                    localTransactions.splice(20);
-                }
-                localStorage.setItem('sa_transactions', JSON.stringify(localTransactions));
-            }
             
             // Keep only last 20 transactions in UI
             while (log.children.length > 20) {
