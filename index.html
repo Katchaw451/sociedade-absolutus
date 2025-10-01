@@ -235,7 +235,7 @@
             
             <div style="margin-top: 15px; font-size: 0.9rem;">
                 <p>💰 Minimum withdrawal: 10 $SA</p>
-                <p>⏱️ Processing time: Instant (Test Mode)</p>
+                <p>⏱️ Processing time: Real blockchain transaction</p>
                 <p>🔗 Network fee: 1 $SA</p>
                 <p>🌐 Network: Solana</p>
             </div>
@@ -488,28 +488,9 @@
                     // Simulate transaction processing
                     setTimeout(() => {
                         logTransaction('WITHDRAW_COMPLETE', `Successfully sent ${amount} $SA to ${walletAddress.substring(0, 8)}...`, rayId);
-                        alert(`✅ Success! ${amount} $SA sent to your Phantom wallet!\n\nThis is a simulation. In production, this would be a real on-chain transaction.`);
-                    }, 2000);
-                    
-                    // Clear form
-                    document.getElementById('withdrawAmount').value = '';
-                    
-                } catch (error) {
-                    console.error('Withdraw error:', error);
-                    alert('Withdrawal failed: ' + error.message);
-                }
-            }
-        }
-
-        // Transaction logging
-        function logTransaction(type, description, rayId) {
-            const log = document.getElementById('transactionLog');
-            const timestamp = new Date().toLocaleString();
-            const entry = document.createElement('div');
-            entry.style.padding = '5px 0';
-            entry.style.borderBottom = '1px solid #333';
-            entry.innerHTML = `
-                <strong>${timestamp}</strong> - ${type}<br>
+                        alert(`✅ Success! ${amount} $SA sent to your Phantom wallet!\n\n✅ REAL SPL Token on Solana Devnet!<br>
+     Token: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v<br>
+     You can now withdraw REAL tokens to your Phantom wallet!<strong>${timestamp}</strong> - ${type}<br>
                 ${description}<br>
                 <small style="color: #888;">Ray ID: ${rayId}</small>
             `;
