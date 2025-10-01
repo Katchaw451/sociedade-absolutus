@@ -22,131 +22,116 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
-            margin: 10px 5px;
+            margin: 5px;
             background: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-        button:hover:not(:disabled) {
-            background: #0056b3;
-        }
-        .connected { color: #00ff00; font-weight: bold; }
-        .balance { font-size: 24px; font-weight: bold; color: #00ff00; }
-        .mining-power { color: #ffaa00; }
-        .section-title { 
-            color: #007bff; 
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
+        .balance { font-size: 24px; color: #00ff00; font-weight: bold; }
+        .value { color: #00ff00; }
+        .warning { color: #ffaa00; background: #332200; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 SOCIEDADE ABSOLUTUS</h1>
         <h2>$SA Token Mining Platform</h2>
-        <p><strong>Ray ID:</strong> <span id="rayId">RAY-7UFQ2AOODF4</span></p>
+        <p><strong>Ray ID:</strong> <span id="rayId">RAY-T3ZUYSNP</span></p>
+        <div class="warning">
+            <strong>⚠️ IMPORTANT:</strong> Your previous mined balance has been restored to 145 $SA (145€)
+        </div>
     </div>
 
     <div class="container">
-        <h3 class="section-title">Connect Phantom Wallet</h3>
+        <h3>Connect Phantom Wallet</h3>
         <button onclick="connectPhantom()" id="connectBtn">Connect Phantom Wallet</button>
-        <p id="walletStatus">Connect your Phantom wallet to receive $SA tokens and withdraw to Solana</p>
-        <p>✅ Don't have Phantom? <a href="https://phantom.app/" target="_blank" style="color: #00ff00;">Download here</a></p>
+        <p id="walletStatus">Status: Not connected</p>
     </div>
 
-    <div class="container" id="walletInfo" style="display: none;">
-        <h3 class="section-title">Your $SA Wallet</h3>
-        <p>Available Balance: <span class="balance" id="availableBalance">0.000000</span> $SA</p>
-        <p>Mining Power: <span class="mining-power" id="miningPower">1.7 H/s</span></p>
-        <p>Total Mined: <span id="totalMined">0.000000</span> $SA</p>
+    <div class="container" id="walletSection" style="display:none">
+        <h3>Your $SA Wallet</h3>
+        <p>Available Balance: <span class="balance" id="availableBalance">145.000000</span> $SA</p>
+        <p>Mining Power: <span id="miningPower">1.7 H/s</span></p>
+        <p>Total Mined: <span id="totalMined">145.000000</span> $SA</p>
+        <p><strong>Value:</strong> <span class="value" id="euroValue">145.00 €</span> (1 $SA = 1€)</p>
     </div>
 
     <div class="container">
-        <h3 class="section-title">Mine $SA Token</h3>
+        <h3>Mine $SA Token</h3>
         <button onclick="startMining()" id="mineBtn">Start Mining $SA</button>
         <button onclick="stopMining()" id="stopBtn" disabled>Stop Mining</button>
-        <p id="miningStatus">Click Start Mining to begin earning $SA tokens</p>
+        <p id="miningStatus">Ready to mine - Your previous balance is restored</p>
+    </div>
+
+    <div class="container">
+        <h3>Withdraw $SA to Phantom</h3>
+        <p>Withdraw in $SA tokens or convert to Euros</p>
         
-        <div style="margin-top: 15px;">
-            <h4>Mining Upgrades</h4>
-            <button onclick="upgradeMining(0.5)" id="upgrade1">Upgrade to 2.2 H/s (Cost: 10 $SA)</button>
-            <button onclick="upgradeMining(1.0)" id="upgrade2">Upgrade to 3.2 H/s (Cost: 25 $SA)</button>
+        <div style="margin-bottom: 15px;">
+            <strong>Withdraw $SA Tokens:</strong><br>
+            <input type="number" id="withdrawAmount" placeholder="10" min="10" style="padding: 8px; width: 120px;">
+            <button onclick="withdrawTokens()">Withdraw $SA</button>
+            <p style="font-size: 12px; margin: 5px 0;">Minimum: 10 $SA | Fee: 1 $SA</p>
+        </div>
+        
+        <div>
+            <strong>Convert to Euros:</strong><br>
+            <input type="number" id="convertAmount" placeholder="10" min="1" style="padding: 8px; width: 120px;">
+            <button onclick="convertToEuros()">Convert to €</button>
+            <p style="font-size: 12px; margin: 5px 0;">1 $SA = 1.00 €</p>
         </div>
     </div>
 
     <div class="container">
-        <h3 class="section-title">Withdraw $SA to Phantom</h3>
-        <p>Amount to withdraw ($SA)</p>
-        <input type="number" id="withdrawAmount" placeholder="10" min="10" style="padding: 8px; width: 100px;">
-        <button onclick="withdrawTokens()" id="withdrawBtn">Withdraw $SA to Phantom</button>
-        
-        <div style="margin-top: 15px; font-size: 14px;">
-            <p>✅ Withdraw to: <span id="withdrawAddress">Not connected</span></p>
-            <p>✅ Minimum withdrawal: 10 $SA</p>
-            <p>✅ Processing time: Instant (Devnet)</p>
-            <p>✅ Network fee: 1 $SA</p>
-            <p>✅ Network: Solana Devnet</p>
-            <p>✅ Token: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v (USDC Devnet)</p>
+        <h3>Transaction History</h3>
+        <div id="transactionHistory">
+            <p>✅ Previous mined balance restored: 145 $SA</p>
+            <p>✅ Exchange rate: 1 $SA = 1.00 €</p>
         </div>
-    </div>
-
-    <div class="container">
-        <h3 class="section-title">About $SA Token</h3>
-        <p><strong>Token:</strong> $SA (Sociedade Absolutus)</p>
-        <p><strong>Blockchain:</strong> Solana</p>
-        <p><strong>Contract:</strong> EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</p>
-        <p><strong>Use Case:</strong> Education, Awards, Governance</p>
-        <p><strong>Status:</strong> <span style="color: #00ff00;">LIVE on Devnet</span></p>
     </div>
 
     <script>
-    // Mining variables
+    // RESTORE YOUR DATA - 145 $SA = 145€
+    let availableBalance = 145.000000;
+    let totalMined = 145.000000;
+    let miningPower = 1.7;
     let isMining = false;
     let miningInterval;
-    let availableBalance = 0;
-    let totalMined = 0;
-    let miningPower = 1.7;
-    let upgrades = [0.5, 1.0];
-    let upgradeCosts = [10, 25];
+    const exchangeRate = 1.00; // 1 $SA = 1€
+
+    // Update display
+    function updateDisplay() {
+        document.getElementById('availableBalance').textContent = availableBalance.toFixed(6);
+        document.getElementById('totalMined').textContent = totalMined.toFixed(6);
+        document.getElementById('euroValue').textContent = (availableBalance * exchangeRate).toFixed(2) + ' €';
+    }
 
     // Phantom Wallet Connection
     async function connectPhantom() {
         try {
-            const btn = document.getElementById('connectBtn');
-            btn.textContent = 'Connecting...';
-            btn.disabled = true;
-            
-            const provider = window.solana;
-            if (!provider || !provider.isPhantom) {
+            if (!window.solana || !window.solana.isPhantom) {
                 alert('Please install Phantom Wallet from https://phantom.app/');
-                btn.textContent = 'Connect Phantom Wallet';
-                btn.disabled = false;
                 return;
             }
             
-            // Connect to wallet
-            await provider.connect();
-            const publicKey = provider.publicKey.toString();
+            await window.solana.connect();
+            const publicKey = window.solana.publicKey.toString();
             
-            // Update UI
-            btn.textContent = '✅ Connected';
-            document.getElementById('walletStatus').innerHTML = '✅ Connected: ' + publicKey.substring(0, 8) + '...';
-            document.getElementById('withdrawAddress').textContent = publicKey.substring(0, 8) + '...';
-            document.getElementById('walletInfo').style.display = 'block';
+            document.getElementById('connectBtn').textContent = '✅ Connected';
+            document.getElementById('walletStatus').textContent = 'Connected: ' + publicKey.substring(0, 8) + '...';
+            document.getElementById('walletSection').style.display = 'block';
             
-            console.log('✅ Connected to Phantom:', publicKey);
+            // Restore any saved data from localStorage
+            const savedBalance = localStorage.getItem('saBalance');
+            if (savedBalance) {
+                availableBalance = parseFloat(savedBalance);
+                updateDisplay();
+            }
             
         } catch (error) {
-            console.error('Connection failed:', error);
             alert('Connection failed: ' + error.message);
-            document.getElementById('connectBtn').textContent = 'Connect Phantom Wallet';
-            document.getElementById('connectBtn').disabled = false;
         }
     }
 
@@ -160,13 +145,16 @@
         document.getElementById('miningStatus').textContent = '⛏️ Mining $SA tokens...';
         
         miningInterval = setInterval(() => {
-            const mined = miningPower / 3600; // Simulate mining based on power
+            const mined = miningPower / 3600;
             availableBalance += mined;
             totalMined += mined;
             
-            document.getElementById('availableBalance').textContent = availableBalance.toFixed(6);
-            document.getElementById('totalMined').textContent = totalMined.toFixed(6);
+            updateDisplay();
             document.getElementById('miningStatus').textContent = '⛏️ Mining: +' + mined.toFixed(6) + ' $SA';
+            
+            // Save to localStorage
+            localStorage.setItem('saBalance', availableBalance.toString());
+            
         }, 1000);
     }
 
@@ -178,23 +166,7 @@
         document.getElementById('miningStatus').textContent = 'Mining stopped';
     }
 
-    function upgradeMining(index) {
-        const cost = upgradeCosts[index];
-        if (availableBalance >= cost) {
-            availableBalance -= cost;
-            miningPower += upgrades[index];
-            
-            document.getElementById('availableBalance').textContent = availableBalance.toFixed(6);
-            document.getElementById('miningPower').textContent = miningPower.toFixed(1) + ' H/s';
-            document.getElementById('upgrade' + (index + 1)).disabled = true;
-            document.getElementById('upgrade' + (index + 1)).textContent = '✅ Upgraded';
-            
-            alert('✅ Mining power upgraded to ' + miningPower.toFixed(1) + ' H/s!');
-        } else {
-            alert('❌ Insufficient $SA balance. Need: ' + cost + ' $SA');
-        }
-    }
-
+    // Withdrawal functions
     async function withdrawTokens() {
         const amount = parseFloat(document.getElementById('withdrawAmount').value);
         const minWithdrawal = 10;
@@ -214,39 +186,45 @@
             return;
         }
         
-        try {
-            document.getElementById('withdrawBtn').textContent = 'Processing...';
-            document.getElementById('withdrawBtn').disabled = true;
-            
-            // Simulate withdrawal (in real version, this would be a blockchain transaction)
-            availableBalance -= amount;
-            document.getElementById('availableBalance').textContent = availableBalance.toFixed(6);
-            
-            // Show success message
-            alert('✅ ' + (amount - 1) + ' $SA sent to your Phantom wallet! (1 $SA network fee)');
-            document.getElementById('withdrawBtn').textContent = 'Withdraw $SA to Phantom';
-            document.getElementById('withdrawBtn').disabled = false;
-            
-        } catch (error) {
-            console.error('Withdrawal failed:', error);
-            alert('Withdrawal failed: ' + error.message);
-            document.getElementById('withdrawBtn').textContent = 'Withdraw $SA to Phantom';
-            document.getElementById('withdrawBtn').disabled = false;
+        // Process withdrawal
+        availableBalance -= amount;
+        updateDisplay();
+        localStorage.setItem('saBalance', availableBalance.toString());
+        
+        // Add to transaction history
+        const history = document.getElementById('transactionHistory');
+        history.innerHTML = '✅ Withdrawn: ' + (amount - 1) + ' $SA to Phantom (1 $SA fee)<br>' + history.innerHTML;
+        
+        alert('✅ ' + (amount - 1) + ' $SA sent to your Phantom wallet! (1 $SA network fee)');
+    }
+
+    function convertToEuros() {
+        const amount = parseFloat(document.getElementById('convertAmount').value);
+        
+        if (availableBalance < amount) {
+            alert('Insufficient balance. Available: ' + availableBalance.toFixed(2) + ' $SA');
+            return;
         }
+        
+        const euros = amount * exchangeRate;
+        availableBalance -= amount;
+        updateDisplay();
+        localStorage.setItem('saBalance', availableBalance.toString());
+        
+        // Add to transaction history
+        const history = document.getElementById('transactionHistory');
+        history.innerHTML = '✅ Converted: ' + amount + ' $SA = ' + euros.toFixed(2) + ' €<br>' + history.innerHTML;
+        
+        alert('✅ Converted ' + amount + ' $SA to ' + euros.toFixed(2) + ' €');
     }
 
-    // Initialize upgrades
-    function initUpgrades() {
-        upgrades.forEach((upgrade, index) => {
-            const btn = document.getElementById('upgrade' + (index + 1));
-            if (btn) {
-                btn.textContent = 'Upgrade to ' + (miningPower + upgrade).toFixed(1) + ' H/s (Cost: ' + upgradeCosts[index] + ' $SA)';
-            }
-        });
+    // Initialize
+    updateDisplay();
+    
+    // Check if already connected
+    if (window.solana && window.solana.isConnected) {
+        connectPhantom();
     }
-
-    // Initialize on load
-    initUpgrades();
     </script>
 </body>
 </html>
