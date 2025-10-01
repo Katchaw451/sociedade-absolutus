@@ -2,229 +2,640 @@
 <html>
 <head>
     <title>Sociedade Absolutus - $SA Mining</title>
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: Arial, sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
+            background: linear-gradient(135deg, #003e2e 0%, #0a0a0a 100%);
+            color: #00ff88; 
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
             padding: 20px;
-            background: #0f0f0f;
-            color: white;
         }
-        .container {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; padding: 40px 20px; }
+        .logo { 
+            font-size: 3rem; 
+            background: linear-gradient(45deg, #ff4500, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .ray-id { 
+            background: #001122; 
+            padding: 10px; 
             margin: 10px 0;
-            border: 1px solid #333;
+            border: 1px solid #00f3ff;
+            border-radius: 5px;
+            font-family: monospace;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            background: #007bff;
+        .mining-section {
+            background: rgba(0, 62, 46, 0.9);
+            padding: 30px;
+            border: 3px solid #ff4500;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .wallet-info {
+            background: rgba(0, 34, 68, 0.9);
+            padding: 20px;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .btn {
+            background: linear-gradient(45deg, #ff4500, #ff8c00);
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 15px 30px;
+            border-radius: 25px;
             cursor: pointer;
+            font-size: 1.1rem;
+            margin: 10px 5px;
+            transition: all 0.3s;
         }
-        .balance { font-size: 24px; color: #00ff00; font-weight: bold; }
-        .value { color: #00ff00; }
-        .warning { color: #ffaa00; background: #332200; padding: 10px; border-radius: 5px; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .mining-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border: 1px solid #00ff88;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            color: #ff4500;
+            margin: 5px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #001122;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4500, #ffd700);
+            border-radius: 10px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+        .withdraw-section {
+            background: rgba(68, 0, 0, 0.9);
+            padding: 25px;
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #001122;
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            color: #00ff88;
+            font-size: 1rem;
+            margin: 8px 0;
+        }
+        .transaction-log {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #444;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .sa-badge {
+            background: linear-gradient(45deg, #ff4500, #ffd700);
+            color: black;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 255, 136, 0.9);
+            color: #003e2e;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 1000;
+            max-width: 300px;
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
-        <h1>🚀 SOCIEDADE ABSOLUTUS</h1>
-        <h2>$SA Token Mining Platform</h2>
-        <p><strong>Ray ID:</strong> <span id="rayId">RAY-T3ZUYSNP</span></p>
-        <div class="warning">
-            <strong>⚠️ IMPORTANT:</strong> Your previous mined balance has been restored to 145 $SA (145€)
+        <div class="header">
+            <div class="logo">🧠 SOCIEDADE ABSOLUTUS</div>
+            <p>$SA Token Mining Platform</p>
+            <div class="ray-id">Ray ID: <span id="rayId">Generating...</span></div>
         </div>
-    </div>
 
-    <div class="container">
-        <h3>Connect Phantom Wallet</h3>
-        <button onclick="connectPhantom()" id="connectBtn">Connect Phantom Wallet</button>
-        <p id="walletStatus">Status: Not connected</p>
-    </div>
-
-    <div class="container" id="walletSection" style="display:none">
-        <h3>Your $SA Wallet</h3>
-        <p>Available Balance: <span class="balance" id="availableBalance">145.000000</span> $SA</p>
-        <p>Mining Power: <span id="miningPower">1.7 H/s</span></p>
-        <p>Total Mined: <span id="totalMined">145.000000</span> $SA</p>
-        <p><strong>Value:</strong> <span class="value" id="euroValue">145.00 €</span> (1 $SA = 1€)</p>
-    </div>
-
-    <div class="container">
-        <h3>Mine $SA Token</h3>
-        <button onclick="startMining()" id="mineBtn">Start Mining $SA</button>
-        <button onclick="stopMining()" id="stopBtn" disabled>Stop Mining</button>
-        <p id="miningStatus">Ready to mine - Your previous balance is restored</p>
-    </div>
-
-    <div class="container">
-        <h3>Withdraw $SA to Phantom</h3>
-        <p>Withdraw in $SA tokens or convert to Euros</p>
-        
-        <div style="margin-bottom: 15px;">
-            <strong>Withdraw $SA Tokens:</strong><br>
-            <input type="number" id="withdrawAmount" placeholder="10" min="10" style="padding: 8px; width: 120px;">
-            <button onclick="withdrawTokens()">Withdraw $SA</button>
-            <p style="font-size: 12px; margin: 5px 0;">Minimum: 10 $SA | Fee: 1 $SA</p>
+        <!-- Wallet Information -->
+        <div class="wallet-info">
+            <h2>💰 Your <span class="sa-badge">$SA</span> Wallet</h2>
+            <div class="mining-stats">
+                <div class="stat-box">
+                    <h4>Available Balance</h4>
+                    <div class="stat-value" id="balance">0 $SA</div>
+                </div>
+                <div class="stat-box">
+                    <h4>Mining Power</h4>
+                    <div class="stat-value" id="miningPower">1.0 H/s</div>
+                </div>
+                <div class="stat-box">
+                    <h4>Total Mined</h4>
+                    <div class="stat-value" id="totalMined">0 $SA</div>
+                </div>
+            </div>
         </div>
-        
-        <div>
-            <strong>Convert to Euros:</strong><br>
-            <input type="number" id="convertAmount" placeholder="10" min="1" style="padding: 8px; width: 120px;">
-            <button onclick="convertToEuros()">Convert to €</button>
-            <p style="font-size: 12px; margin: 5px 0;">1 $SA = 1.00 €</p>
-        </div>
-    </div>
 
-    <div class="container">
-        <h3>Transaction History</h3>
-        <div id="transactionHistory">
-            <p>✅ Previous mined balance restored: 145 $SA</p>
-            <p>✅ Exchange rate: 1 $SA = 1.00 €</p>
+        <!-- Mining Section -->
+        <div class="mining-section">
+            <h2>⛏️ $SA Token Mining</h2>
+            <p>Mine <span class="sa-badge">$SA</span> tokens using your browser's computational power</p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="miningProgress"></div>
+            </div>
+            
+            <div id="miningStatus">Ready to mine $SA...</div>
+            
+            <button class="btn" id="startMiningBtn" onclick="startMining()">🚀 Start $SA Mining</button>
+            <button class="btn" id="stopMiningBtn" onclick="stopMining()" disabled>⏹️ Stop Mining</button>
+            
+            <div style="margin-top: 20px;">
+                <small>Current Hash Rate: <span id="hashRate">0 H/s</span></small>
+            </div>
+        </div>
+
+        <!-- Withdraw Section -->
+        <div class="withdraw-section">
+            <h2>💳 Withdraw <span class="sa-badge">$SA</span> Tokens</h2>
+            
+            <div class="form-group">
+                <input type="text" class="form-input" id="walletAddress" placeholder="Your Crypto Wallet Address">
+                <input type="number" class="form-input" id="withdrawAmount" placeholder="Amount to withdraw ($SA)" min="1">
+                <select class="form-input" id="cryptoNetwork">
+                    <option value="solana">Solana (SOL) - Recommended</option>
+                    <option value="ethereum">Ethereum (ETH)</option>
+                    <option value="bitcoin">Bitcoin (BTC)</option>
+                    <option value="binance">Binance Smart Chain (BSC)</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="withdrawTokens()">💸 Withdraw $SA</button>
+            
+            <div style="margin-top: 15px; font-size: 0.9rem;">
+                <p>💰 Minimum withdrawal: 10 $SA</p>
+                <p>⏱️ Processing time: 2-24 hours</p>
+                <p>🔗 Network fee: 1 $SA</p>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="mining-section">
+            <h2>📋 $SA Transaction History</h2>
+            <div class="transaction-log" id="transactionLog">
+                <!-- Transactions will appear here -->
+            </div>
+        </div>
+
+        <!-- Token Info -->
+        <div class="mining-section">
+            <h2>ℹ️ About $SA Token</h2>
+            <p><strong>Token:</strong> $SA (Sociedade Absolutus)</p>
+            <p><strong>Blockchain:</strong> Solana</p>
+            <p><strong>Total Supply:</strong> 1,000,000,000 $SA</p>
+            <p><strong>Use Case:</strong> Education, Awards, Governance</p>
+            <p><strong>Contract:</strong> H7PWQkA6rRFuRxcKpASspFr6G3mG6L3T87tj3JpyoszX</p>
         </div>
     </div>
 
     <script>
-    // RESTORE YOUR DATA - 145 $SA = 145€
-    let availableBalance = 145.000000;
-    let totalMined = 145.000000;
-    let miningPower = 1.7;
-    let isMining = false;
-    let miningInterval;
-    const exchangeRate = 1.00; // 1 $SA = 1€
+        // Global variables
+        let miningInterval;
+        let isMining = false;
+        let balance = 0;
+        let totalMined = 0;
+        let miningPower = 1.0;
+        let currentHashRate = 0;
+        let deviceId = null;
 
-    // Update display
-    function updateDisplay() {
-        document.getElementById('availableBalance').textContent = availableBalance.toFixed(6);
-        document.getElementById('totalMined').textContent = totalMined.toFixed(6);
-        document.getElementById('euroValue').textContent = (availableBalance * exchangeRate).toFixed(2) + ' €';
-    }
+        // Initialize
+        function init() {
+            // Generate or retrieve device ID
+            deviceId = getDeviceId();
+            console.log("Device ID:", deviceId);
+            
+            // Load data from server
+            loadWalletDataFromServer();
+            generateRayId();
+            updateDisplay();
+            
+            // Show welcome notification
+            showNotification("Welcome to $SA Mining! Your device ID: " + deviceId);
+        }
 
-    // Phantom Wallet Connection
-    async function connectPhantom() {
-        try {
-            if (!window.solana || !window.solana.isPhantom) {
-                alert('Please install Phantom Wallet from https://phantom.app/');
+        // Generate or retrieve device ID
+        function getDeviceId() {
+            let id = localStorage.getItem('sa_device_id');
+            if (!id) {
+                // Create a unique device ID
+                id = 'device_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('sa_device_id', id);
+                
+                // Track new user in analytics
+                trackNewUser(id);
+            }
+            return id;
+        }
+
+        // Track new user in analytics
+        function trackNewUser(deviceId) {
+            const userData = {
+                deviceId: deviceId,
+                firstSeen: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                balance: 0,
+                totalMined: 0,
+                miningPower: 1.0
+            };
+            
+            // Save to analytics
+            saveToAnalytics('new_user', userData);
+        }
+
+        // Save data to analytics storage
+        function saveToAnalytics(eventType, data) {
+            const analyticsData = {
+                event: eventType,
+                deviceId: deviceId,
+                timestamp: new Date().toISOString(),
+                data: data
+            };
+            
+            // Save to localStorage as backup
+            const existingAnalytics = JSON.parse(localStorage.getItem('sa_analytics') || '[]');
+            existingAnalytics.push(analyticsData);
+            localStorage.setItem('sa_analytics', JSON.stringify(existingAnalytics));
+            
+            // Try to send to server
+            fetch('/api/analytics', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(analyticsData)
+            }).catch(error => {
+                console.log('Analytics save failed, using localStorage:', error);
+            });
+        }
+
+        // Generate Ray ID
+        function generateRayId() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 9);
+            const rayId = `ray_${timestamp}_${random}`.toUpperCase();
+            document.getElementById('rayId').textContent = rayId;
+            return rayId;
+        }
+
+        // Load wallet data from server
+        async function loadWalletDataFromServer() {
+            try {
+                const response = await fetch('/api/wallet-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ deviceId: deviceId })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    balance = data.balance || 0;
+                    totalMined = data.totalMined || 0;
+                    miningPower = data.miningPower || 1.0;
+                    
+                    // Load transaction history
+                    if (data.transactions) {
+                        const log = document.getElementById('transactionLog');
+                        log.innerHTML = '';
+                        data.transactions.slice(-20).forEach(tx => {
+                            const entry = document.createElement('div');
+                            entry.style.padding = '5px 0';
+                            entry.style.borderBottom = '1px solid #333';
+                            entry.innerHTML = `
+                                <strong>${tx.timestamp}</strong> - ${tx.type}<br>
+                                ${tx.description}<br>
+                                <small style="color: #888;">Ray ID: ${tx.rayId}</small>
+                            `;
+                            log.appendChild(entry);
+                        });
+                    }
+                    
+                    updateDisplay();
+                } else {
+                    console.error('Failed to load wallet data');
+                    // Fallback to localStorage
+                    loadFromLocalStorage();
+                }
+            } catch (error) {
+                console.error('Error loading wallet data:', error);
+                // Fallback to localStorage
+                loadFromLocalStorage();
+            }
+        }
+
+        // Fallback to localStorage
+        function loadFromLocalStorage() {
+            const localData = localStorage.getItem('sa_wallet_data');
+            if (localData) {
+                const data = JSON.parse(localData);
+                balance = data.balance || 0;
+                totalMined = data.totalMined || 0;
+                miningPower = data.miningPower || 1.0;
+                updateDisplay();
+            }
+        }
+
+        // Save wallet data to server
+        async function saveWalletDataToServer() {
+            const walletData = {
+                deviceId: deviceId,
+                balance: balance,
+                totalMined: totalMined,
+                miningPower: miningPower,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // Save to analytics
+            saveToAnalytics('wallet_update', walletData);
+            
+            try {
+                await fetch('/api/save-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(walletData)
+                });
+            } catch (error) {
+                console.error('Error saving to server:', error);
+                // Fallback to localStorage
+                localStorage.setItem('sa_wallet_data', JSON.stringify(walletData));
+            }
+        }
+
+        // Update display
+        function updateDisplay() {
+            document.getElementById('balance').textContent = balance.toFixed(6) + ' $SA';
+            document.getElementById('totalMined').textContent = totalMined.toFixed(6) + ' $SA';
+            document.getElementById('miningPower').textContent = miningPower.toFixed(1) + ' H/s';
+            document.getElementById('hashRate').textContent = currentHashRate.toFixed(1) + ' H/s';
+        }
+
+        // Mining functions
+        function startMining() {
+            if (isMining) return;
+            
+            isMining = true;
+            document.getElementById('startMiningBtn').disabled = true;
+            document.getElementById('stopMiningBtn').disabled = false;
+            document.getElementById('miningStatus').textContent = 'Mining $SA in progress...';
+            
+            let progress = 0;
+            const rayId = generateRayId();
+            
+            // Track mining start
+            saveToAnalytics('mining_start', {
+                startTime: new Date().toISOString(),
+                initialBalance: balance,
+                miningPower: miningPower
+            });
+            
+            miningInterval = setInterval(() => {
+                // Simulate mining progress
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    completeMiningCycle(rayId);
+                    progress = 0;
+                }
+                
+                // Update display
+                document.getElementById('miningProgress').style.width = progress + '%';
+                currentHashRate = miningPower * (0.8 + Math.random() * 0.4);
+                updateDisplay();
+                
+                // Add small amount continuously
+                const minedAmount = (miningPower * 0.0001) * (1 + Math.random() * 0.5);
+                balance += minedAmount;
+                totalMined += minedAmount;
+                saveWalletDataToServer();
+                updateDisplay();
+                
+            }, 100);
+            
+            logTransaction('MINING_START', 'Mining session started', rayId);
+        }
+
+        function completeMiningCycle(rayId) {
+            // Reward for completed cycle
+            const reward = miningPower * (0.1 + Math.random() * 0.2);
+            balance += reward;
+            totalMined += reward;
+            saveWalletDataToServer();
+            updateDisplay();
+            
+            logTransaction('MINING_REWARD', `Mined ${reward.toFixed(6)} $SA`, rayId);
+            
+            // Chance to increase mining power
+            if (Math.random() < 0.1) {
+                miningPower += 0.1;
+                logTransaction('POWER_UP', `Mining power increased to ${miningPower.toFixed(1)} H/s`, generateRayId());
+                updateDisplay();
+                showNotification("Mining power increased!");
+            }
+        }
+
+        function stopMining() {
+            if (!isMining) return;
+            
+            isMining = false;
+            clearInterval(miningInterval);
+            document.getElementById('startMiningBtn').disabled = false;
+            document.getElementById('stopMiningBtn').disabled = true;
+            document.getElementById('miningProgress').style.width = '0%';
+            document.getElementById('miningStatus').textContent = 'Mining stopped';
+            currentHashRate = 0;
+            updateDisplay();
+            
+            // Track mining stop
+            saveToAnalytics('mining_stop', {
+                endTime: new Date().toISOString(),
+                finalBalance: balance,
+                sessionMined: totalMined
+            });
+            
+            logTransaction('MINING_STOP', 'Mining session stopped', generateRayId());
+        }
+
+        // Withdraw functions
+        function withdrawTokens() {
+            const address = document.getElementById('walletAddress').value;
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const network = document.getElementById('cryptoNetwork').value;
+            
+            if (!address) {
+                showNotification('Please enter your wallet address', 'error');
                 return;
             }
             
-            await window.solana.connect();
-            const publicKey = window.solana.publicKey.toString();
-            
-            document.getElementById('connectBtn').textContent = '✅ Connected';
-            document.getElementById('walletStatus').textContent = 'Connected: ' + publicKey.substring(0, 8) + '...';
-            document.getElementById('walletSection').style.display = 'block';
-            
-            // Restore any saved data from localStorage
-            const savedBalance = localStorage.getItem('saBalance');
-            if (savedBalance) {
-                availableBalance = parseFloat(savedBalance);
-                updateDisplay();
+            if (!amount || amount < 10) {
+                showNotification('Minimum withdrawal is 10 $SA', 'error');
+                return;
             }
             
-        } catch (error) {
-            alert('Connection failed: ' + error.message);
-        }
-    }
-
-    // Mining functions
-    function startMining() {
-        if (isMining) return;
-        
-        isMining = true;
-        document.getElementById('mineBtn').disabled = true;
-        document.getElementById('stopBtn').disabled = false;
-        document.getElementById('miningStatus').textContent = '⛏️ Mining $SA tokens...';
-        
-        miningInterval = setInterval(() => {
-            const mined = miningPower / 3600;
-            availableBalance += mined;
-            totalMined += mined;
+            if (amount > balance) {
+                showNotification('Insufficient balance', 'error');
+                return;
+            }
             
-            updateDisplay();
-            document.getElementById('miningStatus').textContent = '⛏️ Mining: +' + mined.toFixed(6) + ' $SA';
+            const fee = 1; // Network fee
+            const totalDeduction = amount + fee;
             
-            // Save to localStorage
-            localStorage.setItem('saBalance', availableBalance.toString());
+            if (confirm(`Withdraw ${amount} $SA to ${address}?\nNetwork: ${network}\nNetwork fee: ${fee} $SA\nTotal: ${totalDeduction} $SA`)) {
+                balance -= totalDeduction;
+                saveWalletDataToServer();
+                updateDisplay();
+                
+                const rayId = generateRayId();
+                logTransaction('WITHDRAW', `Withdrew ${amount} $SA to ${network} network`, rayId);
+                
+                // Track withdrawal
+                saveToAnalytics('withdrawal', {
+                    amount: amount,
+                    fee: fee,
+                    network: network,
+                    address: address,
+                    rayId: rayId
+                });
+                
+                // Simulate processing
+                setTimeout(() => {
+                    logTransaction('WITHDRAW_COMPLETE', `Withdrawal processed to ${address}`, rayId);
+                    showNotification(`Withdrawal of ${amount} $SA completed!`);
+                }, 2000);
+                
+                // Clear form
+                document.getElementById('walletAddress').value = '';
+                document.getElementById('withdrawAmount').value = '';
+            }
+        }
+
+        // Transaction logging
+        async function logTransaction(type, description, rayId) {
+            const log = document.getElementById('transactionLog');
+            const timestamp = new Date().toLocaleString();
+            const entry = document.createElement('div');
+            entry.style.padding = '5px 0';
+            entry.style.borderBottom = '1px solid #333';
+            entry.innerHTML = `
+                <strong>${timestamp}</strong> - ${type}<br>
+                ${description}<br>
+                <small style="color: #888;">Ray ID: ${rayId}</small>
+            `;
+            log.insertBefore(entry, log.firstChild);
             
-        }, 1000);
-    }
-
-    function stopMining() {
-        isMining = false;
-        clearInterval(miningInterval);
-        document.getElementById('mineBtn').disabled = false;
-        document.getElementById('stopBtn').disabled = true;
-        document.getElementById('miningStatus').textContent = 'Mining stopped';
-    }
-
-    // Withdrawal functions
-    async function withdrawTokens() {
-        const amount = parseFloat(document.getElementById('withdrawAmount').value);
-        const minWithdrawal = 10;
-        
-        if (!window.solana || !window.solana.publicKey) {
-            alert('Please connect Phantom wallet first');
-            return;
+            // Save transaction to server
+            const transactionData = {
+                deviceId: deviceId,
+                type: type,
+                description: description,
+                rayId: rayId,
+                timestamp: timestamp
+            };
+            
+            // Track in analytics
+            saveToAnalytics('transaction', transactionData);
+            
+            try {
+                await fetch('/api/log-transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+            } catch (error) {
+                console.error('Error logging transaction:', error);
+                // Fallback to localStorage
+                const localTransactions = JSON.parse(localStorage.getItem('sa_transactions') || '[]');
+                localTransactions.unshift(transactionData);
+                if (localTransactions.length > 20) {
+                    localTransactions.splice(20);
+                }
+                localStorage.setItem('sa_transactions', JSON.stringify(localTransactions));
+            }
+            
+            // Keep only last 20 transactions in UI
+            while (log.children.length > 20) {
+                log.removeChild(log.lastChild);
+            }
         }
-        
-        if (amount < minWithdrawal) {
-            alert('Minimum withdrawal is ' + minWithdrawal + ' $SA');
-            return;
-        }
-        
-        if (availableBalance < amount) {
-            alert('Insufficient balance. Available: ' + availableBalance.toFixed(2) + ' $SA');
-            return;
-        }
-        
-        // Process withdrawal
-        availableBalance -= amount;
-        updateDisplay();
-        localStorage.setItem('saBalance', availableBalance.toString());
-        
-        // Add to transaction history
-        const history = document.getElementById('transactionHistory');
-        history.innerHTML = '✅ Withdrawn: ' + (amount - 1) + ' $SA to Phantom (1 $SA fee)<br>' + history.innerHTML;
-        
-        alert('✅ ' + (amount - 1) + ' $SA sent to your Phantom wallet! (1 $SA network fee)');
-    }
 
-    function convertToEuros() {
-        const amount = parseFloat(document.getElementById('convertAmount').value);
-        
-        if (availableBalance < amount) {
-            alert('Insufficient balance. Available: ' + availableBalance.toFixed(2) + ' $SA');
-            return;
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            
+            // Set color based on type
+            if (type === 'error') {
+                notification.style.background = 'rgba(255, 0, 0, 0.9)';
+                notification.style.color = 'white';
+            } else {
+                notification.style.background = 'rgba(0, 255, 136, 0.9)';
+                notification.style.color = '#003e2e';
+            }
+            
+            notification.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
         }
-        
-        const euros = amount * exchangeRate;
-        availableBalance -= amount;
-        updateDisplay();
-        localStorage.setItem('saBalance', availableBalance.toString());
-        
-        // Add to transaction history
-        const history = document.getElementById('transactionHistory');
-        history.innerHTML = '✅ Converted: ' + amount + ' $SA = ' + euros.toFixed(2) + ' €<br>' + history.innerHTML;
-        
-        alert('✅ Converted ' + amount + ' $SA to ' + euros.toFixed(2) + ' €');
-    }
 
-    // Initialize
-    updateDisplay();
-    
-    // Check if already connected
-    if (window.solana && window.solana.isConnected) {
-        connectPhantom();
-    }
+        // Auto-start mining after 5 seconds
+        setTimeout(() => {
+            if (!isMining) {
+                document.getElementById('miningStatus').textContent = 'Click Start Mining to begin earning $SA...';
+            }
+        }, 5000);
+
+        // Initialize when page loads
+        window.onload = init;
     </script>
 </body>
 </html>
